@@ -14,8 +14,27 @@ impl Game {
         }
     }
 
+    pub fn render(&self) -> String {
+        let output = String::new();
+
+        for row in &self.board {
+            for tile in row {
+                let tile_char = match tile.1 {
+                    tiles::TileType::Normal => String::from(" "),
+                    tiles::TileType::Middle => String::from("+"),
+                    tiles::TileType::MultiplyWord(n) => n.to_string(),
+                    tiles::TileType::MultiplyLetter(n) => n.to_string(),
+                };
+                print!("{}  ", tile_char);
+            }
+            println!("");
+        }
+
+        output
+    }
+
     pub fn test(&mut self) {
-        self.board = vec![];
+        //self.board = vec![];
     }
 }
 
