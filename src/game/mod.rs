@@ -1,8 +1,22 @@
-mod super::tiles;
+pub mod tiles;
 
 #[allow(dead_code)]
 pub struct Game {
-    pub board: Vec<Vec<tiles::Tile>>,
+    pub board: tiles::Board,
+    pub preview: tiles::Board,
+}
+
+impl Game {
+    pub fn new() -> Self {
+        Game {
+            board: tiles::generate_empty_board(),
+            preview: tiles::generate_empty_board(),
+        }
+    }
+
+    pub fn test(&mut self) {
+        self.board = vec![];
+    }
 }
 
 #[allow(dead_code)]
