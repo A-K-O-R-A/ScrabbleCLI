@@ -9,7 +9,7 @@ pub struct Game {
 fn main() {
     let field = board::TileType::MultiplyWord(12);
 
-    println!("{:?}", field);
+    println!("A {:?}", field);
 }
 
 #[allow(dead_code)]
