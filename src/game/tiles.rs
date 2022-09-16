@@ -15,7 +15,7 @@ pub enum TileType {
 pub struct Tile(pub Option<char>, pub TileType);
 
 impl Tile {
-    pub fn calculate_value(&self) -> u8 {
+    pub fn character_value(&self) -> u8 {
         match self.0 {
             Some(c) => match c {
                 'A' | 'E' | 'I' | 'O' | 'N' | 'R' | 'T' | 'L' | 'S' | 'U' => 1,
@@ -29,6 +29,14 @@ impl Tile {
             },
             None => 0,
         }
+    }
+
+    pub fn tile_value(&self) -> u8 {
+        self.character_value()
+            * match self.1 {
+                TileType::MultiplyCharacter(n) => n,
+                _ => 1,
+            }
     }
 }
 
