@@ -1,9 +1,13 @@
+use std::io::{Stdout, Write};
+use terminal::{error, Action, Clear, Retrieved, Terminal, Value};
+
 pub mod tiles;
 
 #[allow(dead_code)]
 pub struct Game {
     pub board: tiles::Board,
     pub preview: tiles::Board,
+    pub terminal: Terminal<Stdout>,
 }
 
 impl Game {
@@ -11,11 +15,16 @@ impl Game {
         Game {
             board: tiles::generate_empty_board(),
             preview: tiles::generate_empty_board(),
+            terminal: terminal::stdout(),
         }
     }
 
     pub fn render(&self) -> String {
         let output = String::new();
+
+        self.terminal
+            .act(Action::ClearTerminal(Clear::All))
+            .expect("Cant STOUT");
 
         for row in &self.board {
             for tile in row {
