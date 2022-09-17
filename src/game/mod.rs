@@ -1,5 +1,5 @@
 use std::io::{Stdout, Write};
-use terminal::{error, Action, Clear, Retrieved, Terminal, Value};
+use terminal::{error, Action, Clear, Color, Retrieved, Terminal, Value};
 
 pub mod tiles;
 
@@ -19,27 +19,44 @@ impl Game {
         }
     }
 
-    pub fn render(&self) -> String {
+    pub fn render(&self) -> Result<String, terminal::error::ErrorKind> {
         let output = String::new();
 
-        self.terminal
-            .act(Action::ClearTerminal(Clear::All))
-            .expect("Cant STOUT");
+        self.terminal.act(Action::ClearTerminal(Clear::All))?;
 
         for row in &self.board {
             for tile in row {
+                self.terminal
+                    .act(Action::SetForegroundColor(Color::Black))?;
                 let tile_char = match tile.1 {
-                    tiles::TileType::Normal => String::from(" "),
-                    tiles::TileType::Middle => String::from("+"),
-                    tiles::TileType::MultiplyWord(n) => n.to_string(),
-                    tiles::TileType::MultiplyLetter(n) => n.to_string(),
+                    tiles::TileType::Normal => {
+                        self.terminal
+                            .act(Action::SetBackgroundColor(Color::Reset))?;
+                        String::from(" ")
+                    }
+                    tiles::TileType::Middle => {
+                        self.terminal
+                            .act(Action::SetBackgroundColor(Color::White))?;
+                        String::from("+")
+                    }
+                    tiles::TileType::MultiplyWord(n) => {
+                        self.terminal.act(Action::SetBackgroundColor(Color::Red))?;
+                        n.to_string()
+                    }
+                    tiles::TileType::MultiplyLetter(n) => {
+                        self.terminal
+                            .act(Action::SetBackgroundColor(Color::DarkYellow))?;
+                        n.to_string()
+                    }
                 };
-                print!("{}  ", tile_char);
+                print!(" {} ", tile_char);
             }
+            self.terminal
+                .act(Action::SetBackgroundColor(Color::Reset))?;
             println!("");
         }
 
-        output
+        Ok(output)
     }
 
     pub fn test(&mut self) {

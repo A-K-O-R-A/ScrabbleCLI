@@ -1,5 +1,7 @@
 // use std::collections::HashMap;
 
+use terminal::Color;
+
 #[derive(Debug)]
 #[allow(dead_code)]
 pub enum TileType {
@@ -37,6 +39,15 @@ impl Tile {
                 TileType::MultiplyLetter(n) => n,
                 _ => 1,
             }
+    }
+
+    pub fn get_color(&self) -> Color {
+        match self.1 {
+            TileType::Normal => Color::Reset,
+            TileType::Middle => Color::White,
+            TileType::MultiplyWord(_) => Color::Red,
+            TileType::MultiplyLetter(_) => Color::DarkYellow,
+        }
     }
 }
 
