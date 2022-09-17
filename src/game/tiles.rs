@@ -49,6 +49,26 @@ impl Tile {
             TileType::MultiplyLetter(_) => Color::DarkYellow,
         }
     }
+
+    pub fn get_text(&self) -> String {
+        match self.1 {
+            TileType::Normal => String::from(" "),
+            TileType::Middle => String::from("+"),
+            TileType::MultiplyWord(n) => n.to_string(),
+            TileType::MultiplyLetter(n) => n.to_string(),
+        }
+    }
+
+    pub fn render(
+        &self,
+        terminal: &terminal::Terminal<std::io::Stdout>,
+    ) -> Result<(), terminal::error::ErrorKind> {
+        terminal.act(terminal::Action::SetBackgroundColor(self.get_color()))?;
+        print!("{}", self.get_text());
+        terminal.act(terminal::Action::SetBackgroundColor(Color::Reset))?;
+
+        Ok(())
+    }
 }
 
 pub type Board = Vec<Vec<Tile>>;
@@ -58,6 +78,8 @@ fn distance_from_middle(n: u8) -> u8 {
     (7 - n as i32).abs() as u8
 }
 */
+
+const UNICODE: [[&'static str; 1]; 1] = [["a"]];
 
 pub fn generate_empty_board() -> Board {
     const N: Tile = Tile(None, TileType::Normal);
