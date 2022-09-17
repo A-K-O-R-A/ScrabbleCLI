@@ -1,1 +1,0 @@
-/home/akora/dev/rust/ScrabbleCLI/target/debug/my-project: /home/akora/dev/rust/ScrabbleCLI/src/game/mod.rs /home/akora/dev/rust/ScrabbleCLI/src/game/tiles.rs /home/akora/dev/rust/ScrabbleCLI/src/main.rs
