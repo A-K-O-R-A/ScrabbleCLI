@@ -1,6 +1,8 @@
 // use std::collections::HashMap;
+extern crate termion;
+use termion::color;
 
-use terminal::Color;
+use super::Game;
 
 #[derive(Debug)]
 #[allow(dead_code)]
@@ -41,12 +43,12 @@ impl Tile {
             }
     }
 
-    pub fn get_color(&self) -> Color {
+    pub fn get_color(&self) -> &'static (dyn color::Color + 'static) {
         match self.1 {
-            TileType::Normal => Color::Reset,
-            TileType::Middle => Color::White,
-            TileType::MultiplyWord(_) => Color::Red,
-            TileType::MultiplyLetter(_) => Color::DarkYellow,
+            TileType::Normal => color::Reset,
+            TileType::Middle => color::White,
+            TileType::MultiplyWord(_) => color::Red,
+            TileType::MultiplyLetter(_) => color::Yellow,
         }
     }
 
@@ -59,15 +61,15 @@ impl Tile {
         }
     }
 
-    pub fn render(
-        &self,
-        terminal: &terminal::Terminal<std::io::Stdout>,
-    ) -> Result<(), terminal::error::ErrorKind> {
-        terminal.act(terminal::Action::SetBackgroundColor(self.get_color()))?;
-        print!("{}", self.get_text());
-        terminal.act(terminal::Action::SetBackgroundColor(Color::Reset))?;
-
-        Ok(())
+    pub fn render(&self, game: &Game) {
+        print!(
+            "{}{}{}{}{}",
+            color::Bg(self.get_color()),
+            color::Bg(color::Black),
+            self.get_text(),
+            color::Bg(color::Reset),
+            color::Bg(color::Reset)
+        );
     }
 }
 
@@ -79,7 +81,7 @@ fn distance_from_middle(n: u8) -> u8 {
 }
 */
 
-const UNICODE: [[&'static str; 1]; 1] = [["a"]];
+//const UNICODE: [[&'static str; 1]; 1] = [["a"]];
 
 pub fn generate_empty_board() -> Board {
     const N: Tile = Tile(None, TileType::Normal);

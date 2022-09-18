@@ -1,41 +1,47 @@
-use std::io::{Stdout, Write};
-use terminal::{error, Action, Clear, Color, Retrieved, Terminal, Value};
+extern crate termion;
 
+use std::io::{stdin, stdout, StdinLock, StdoutLock, Write};
+use termion::{clear, color, input::TermRead};
+
+pub mod symbols;
 pub mod tiles;
 
 #[allow(dead_code)]
 pub struct Game {
     pub board: tiles::Board,
     pub preview: tiles::Board,
-    pub terminal: Terminal<Stdout>,
+    pub stdout: StdoutLock<'static>,
+    pub stdin: StdinLock<'static>,
 }
 
 impl Game {
     pub fn new() -> Self {
+        let stdout = stdout();
+        let mut stdout = stdout.lock();
+        let stdin = stdin();
+        let mut stdin = stdin.lock();
+
         Game {
             board: tiles::generate_empty_board(),
             preview: tiles::generate_empty_board(),
-            terminal: terminal::stdout(),
+            stdout: stdout,
+            stdin: stdin,
         }
     }
 
-    pub fn render(&self) -> Result<String, terminal::error::ErrorKind> {
+    pub fn render(&self) {
         let output = String::new();
 
-        self.terminal.act(Action::ClearTerminal(Clear::All))?;
+        output += clear::All.to_string().as_str();
 
         for row in &self.board {
             for tile in row {
                 print!("├");
-                tile.render(&self.terminal)?;
+                tile.render(self);
                 print!("┤");
             }
-            self.terminal
-                .act(Action::SetBackgroundColor(Color::Reset))?;
             println!("");
         }
-
-        Ok(output)
     }
 
     pub fn test(&mut self) {
